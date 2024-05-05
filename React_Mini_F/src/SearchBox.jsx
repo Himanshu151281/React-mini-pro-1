@@ -7,20 +7,16 @@ export default function SearchBox() {
 
     let [city, setCity] = useState("");
 
-    // Define the API URL and API key for the weather API
     const API_URL = "https://api.openweathermap.org/data/2.5/weather";
     const API_KEY = "75d84ee6f6afb35c3c5731d0c0212510";
 
-    // Function to fetch weather information from the API
     let getWeatherInfo = async () => {
-        // Make a GET request to the weather API with the city and API key
         let response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
         
-        // Parse the response as JSON
         let jsonResponse = await response.json();
 
-        // Extract the relevant weather information from the JSON response
         let result = {
+            city: city,
             temp: jsonResponse.main.temp,
             tempMin: jsonResponse.main.temp_min,
             tempMax: jsonResponse.main.temp_max,
@@ -29,7 +25,6 @@ export default function SearchBox() {
             weather: jsonResponse.weather[0].description,
         };
 
-        // Log the weather information to the console
         console.log(result);
     };
 
