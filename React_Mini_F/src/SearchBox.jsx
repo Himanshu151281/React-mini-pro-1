@@ -3,36 +3,51 @@ import Button from "@mui/material/Button";
 import "./SearchBox.css";
 import { useState } from "react";
 
-// Define a functional component named SearchBox
 export default function SearchBox() {
-  // Declare a state variable named 'city' and initialize it with an empty string
-  let [city, setCity] = useState("");
 
-  // Define a function named 'handleChange' that takes an event object as a parameter
-  // This function updates the 'city' state variable with the value entered in the input field
+    let [city, setCity] = useState("");
+
+    // Define the API URL and API key for the weather API
+    const API_URL = "https://api.openweathermap.org/data/2.5/weather";
+    const API_KEY = "75d84ee6f6afb35c3c5731d0c0212510";
+
+    // Function to fetch weather information from the API
+    let getWeatherInfo = async () => {
+        // Make a GET request to the weather API with the city and API key
+        let response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
+        
+        // Parse the response as JSON
+        let jsonResponse = await response.json();
+
+        // Extract the relevant weather information from the JSON response
+        let result = {
+            temp: jsonResponse.main.temp,
+            tempMin: jsonResponse.main.temp_min,
+            tempMax: jsonResponse.main.temp_max,
+            humidity: jsonResponse.main.humidity,
+            feelsLike: jsonResponse.main.feels_like,
+            weather: jsonResponse.weather[0].description,
+        };
+
+        // Log the weather information to the console
+        console.log(result);
+    };
+
   let handleChange = (evt) => {
     setCity(evt.target.value);
   };
 
-  // Define a function named 'handleSubmit' that takes an event object as a parameter
-  // This function prevents the default form submission behavior, logs the 'city' value to the console, and resets the 'city' state variable to an empty string
   let handleSubmit = (evt) => {
     evt.preventDefault();
     console.log(city);
     setCity("");
+    getWeatherInfo();
   };
 
-  // Render the SearchBox component
   return (
-    // Render a div element with the class name 'SearchBox'
     <div className="SearchBox">
-      {/* // Render an h3 element with the text 'Search for the weather' */}
       <h3>Search for the weather</h3>
-      {/* // Render a form element with an onSubmit event handler set to the 'handleSubmit' function */}
       <form onSubmit={handleSubmit}>
-        {/* // Render a TextField component from the @mui/material package
-                // This component is used for inputting the city name
-                // It has various props such as id, label, variant, required, value, and onChange */}
         <TextField
           id="city"
           label="City Name"
@@ -41,12 +56,8 @@ export default function SearchBox() {
           value={city}
           onChange={handleChange}
         />
-        {/* // Render two line breaks for spacing */}
         <br></br>
         <br></br>
-        {/* // Render a Button component from the @mui/material package
-                // This component is used for submitting the form
-                // It has a variant prop set to 'contained' and a type prop set to 'submit' */}
         <Button variant="contained" type="submit">
           Search
         </Button>
